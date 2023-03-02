@@ -1,9 +1,7 @@
 CPATH='.;lib/hamcrest-core-1.3.jar;lib/junit-4.13.2.jar'
+# For mac, revise CPATH to CPATH='.:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar'
 
-rm -rf student-submission
-rm -rf *.class
-rm -rf *.txt
-rm -rf ListExamples.java
+rm -rf student-submission *.class *.txt ListExamples.java 2>remove-err.txt
 
 git clone $1 student-submission 2>clone-result.txt
 if [[ $? -ne 0 ]]
