@@ -38,7 +38,7 @@ TotalPoints=`wc -l < number-tests.txt`
 grep ") " exec-result.txt > failed-tests.txt
 LostPoints=`wc -l < failed-tests.txt`
 
-EarnedPoints=$($TotalPoints-$LostPoints)
+EarnedPoints=$(($TotalPoints-$LostPoints))
 echo -e '\nScore:'
 echo -e $EarnedPoints " / " $TotalPoints
 
