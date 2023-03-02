@@ -5,38 +5,50 @@ rm -rf *.class
 rm -rf *.txt
 rm -rf ListExamples.java
 
-git clone $1 student-submission
+git clone $1 student-submission 2>clone-result.txt
 if [[ $? -ne 0 ]]
 then 
-    echo 'Clone Failed.'
+    echo -e '\nClone Failed.'
+    cat clone-result.txt
     exit
 fi
 
-echo 'Finished cloning'
+echo -e '\nFinished cloning'
 
 if [[ -f student-submission/ListExamples.java ]]
 then
     cp student-submission/ListExamples.java ./
 else
-    echo 'student-submission/ListExamples.java not found'
+    echo -e 'student-submission/ListExamples.java not found'
     exit
 fi
 
 javac -cp $CPATH *.java 2>compile-err.txt
 if [[ $? -ne 0 ]]
 then
-    echo 'Compile Failed'
+    echo -e 'Compile Failed'
     cat compile-err.txt
     exit
 fi
 
 
-java -cp $CPATH org.junit.runner.JUnitCore TestListExamples > exec-err.txt
-if [[ $? -ne 0 ]]
-then
-    echo 'Test execution failed'
-    cat exec-err.txt
-    exit
+java -cp $CPATH org.junit.runner.JUnitCore TestListExamples > exec-result.txt
+
+grep "@Test" TestListExamples.java > number-tests.txt
+TotalPoints=`wc -l < number-tests.txt`
+
+grep ") " exec-result.txt > failed-tests.txt
+LostPoints=`wc -l < failed-tests.txt`
+
+let EarnedPoints=$TotalPoints-$LostPoints
+echo -e '\nScore:'
+echo -e $EarnedPoints " / " $TotalPoints
+
+if [[ $EarnedPoints -ne $TotalPoints ]]
+then 
+    echo -e '\nFailed Tests Summary:'
+    cat failed-tests.txt
 fi
 
+echo -e '\nAuto grading done\nThanks for using!'
 
